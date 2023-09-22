@@ -6,31 +6,44 @@ template <typename T>
 using vec = std::vector<T>;
 
 
-bool is_fighting_number(ll n) {
+bool is_fighting_number(vec<int> n, ) {
     vec<bool> already_checked = vec<bool>(10, false);
-    ll num = n;
-    ll first = n % 10;
-    while (n > 0) {
-        ll t = n % 10;
-        n /= 10;
+    
+    return true;
+}
 
-        if (t == 0) {
-            return false;
-        }
+int to_number(vec<int> l) {
+    int i = 0;
+    ll result = 0;
+    ll mult = 1;
+    while (l[i] != -1) {
+        result += l[i] * mult;
+        i++;
+        mult*=10;
+    }
+    return result;
+}
 
-        if((already_checked[t] || (t == 1))){
-            already_checked[t] = true;
-        } else if (t == 2 && first%2 == 0){
-            already_checked[2] = true;
-        } else if (t == 5 && first%5 == 0){
-            already_checked[5] = true;
-        } else if (num % t == 0) {
-            already_checked[t] = true;
-        } else {
-            return false;
+vec<int> from_number(ll num) {
+    vec<int> liczba;
+    
+    while(num > 0) {
+        liczba.push_back(num%10);
+        num /= 10;
+    }
+    return liczba;
+}
+
+vec<int> increment(vec<int> num) {
+    int i = 0;
+    while(++num[i] != 10) {
+        num[i] = 1;
+        i++;
+        if(i == num.size()) {
+            num.push_back(1);
         }
     }
-    return true;
+    return num;
 }
 
 int main() {
@@ -41,11 +54,11 @@ int main() {
     ll from, to;
     std::cin>>from>>to;
 
-    ll count = 0;
-    for (ll i = from; i<= to; i++) {
-        count += is_fighting_number(i);
-    }
-    std::cout<<count;
+    vec<int> liczba = from_number(from);
 
+    while(to_number(liczba) < to) {
+        increment(liczba);
+    }
+    
     std::cout.flush();
 }
