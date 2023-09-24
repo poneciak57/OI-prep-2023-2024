@@ -5,51 +5,29 @@ typedef std::string str;
 template <typename T>
 using vec = std::vector<T>;
 
+ll count = 0;
 
-bool is_fighting_number(vec<int> &n, ll full) {
-    vec<bool> already_checked = vec<bool>(10, false);
-    
-    for(int t: n) {
-        if((already_checked[t] || (t == 1))) {
-            already_checked[t] = true;
-        } else if (t == 2 && n[0]%2 == 0) {
-            already_checked[2] = true;
-        } else if (t == 5 && n[0] == 5) {
-            already_checked[5] = true;
-        } else if (full % t == 0) {
-            already_checked[t] = true;
-        } else {
-            return false;
+ll fighting_number(ll n) {
+    ll first = n % 10;
+
+    str num = std::to_string(n);
+    std::set<char> nums(num.begin(), num.end());
+
+    for(char unum: nums) {
+        switch (unum)
+        {
+            case '0': return 1; break;
+            case '1': break;
+            case '2': if(first%2 == 1) return 1; break;
+            // case '3': if(sum%3 != 0) return 1; break;
+            case '5': if(first == 0 || first == 5) return 1; break;
+            // case '6': if(first%2 != 0 || sum%3 != 0) return 1; break;
+            // case '9': if(sum%9 != 0) return 1; break;
+            default: if(n%((int)unum - 48) != 0) return 1; break;
         }
     }
-
-    return true;
-}
-
-vec<int> from_number(ll num) {
-    vec<int> liczba;
-    
-    while(num > 0) {
-        liczba.push_back(num%10);
-        num /= 10;
-    }
-    return liczba;
-}
-
-int increment(vec<int> &num) {
-    int i = 0;
-    int inc = 1;
-    int mult = 1;
-    while(++num[i] == 10) {
-        num[i] = 1;
-        i++;
-        inc+=mult;
-        mult*=10;
-        if(i == num.size()) {
-            num.push_back(0);
-        }
-    }
-    return inc;
+    count++;
+    return 1;
 }
 
 int main() {
@@ -60,15 +38,13 @@ int main() {
     ll from, to;
     std::cin>>from>>to;
 
-    vec<int> liczba = from_number(from);
-    ll full = from;
-    ll count = 0;
-
-    while(full < to) {
-        count += is_fighting_number(liczba, full);
-        full += increment(liczba);
+    ll i = from;
+    while (i <= to)
+    {
+        i += fighting_number(i);
     }
     
     std::cout<<count;
+
     std::cout.flush();
 }
