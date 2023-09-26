@@ -1,0 +1,2 @@
+CompileFlags:
+  Add: [-I/Users/ponec/scoop/apps/mingw/12.2.0-rt_v10-rev1/lib/gcc/x86_64-w64-mingw32/12.2.0/include/c++/x86_64-w64-mingw32]

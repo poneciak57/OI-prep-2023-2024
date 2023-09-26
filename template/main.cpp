@@ -1,4 +1,4 @@
-#include "../../include/base.hpp"
+#include <bits/stdc++.h>
 typedef long long ll;
 typedef std::string str;
 
