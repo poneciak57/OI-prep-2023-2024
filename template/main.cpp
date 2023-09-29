@@ -7,10 +7,10 @@ using vec = std::vector<T>;
 
 
 int main() {
-    std::ios_base::sync_with_stdio(false);
-    std::cout.tie(nullptr);
-    std::cin.tie(nullptr);
+  std::ios_base::sync_with_stdio(false);
+  std::cout.tie(nullptr);
+  std::cin.tie(nullptr);
 
 
-    std::cout.flush();
+  std::cout.flush();
 }
