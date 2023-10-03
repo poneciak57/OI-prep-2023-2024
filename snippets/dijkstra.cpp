@@ -24,7 +24,7 @@ ll dijkstra(ll src, ll dest) {
   d[src] = 0;
   vec<ll> p(n + 1, -1);
   std::priority_queue<llPair, vec<llPair>, std::greater<llPair>> pq;
-  pq.push({0, src});  // Push the starting node into the priority queue with weight 0
+  pq.push({0, src});
 
   while (!pq.empty()) {
     llPair top = pq.top();
@@ -33,7 +33,7 @@ ll dijkstra(ll src, ll dest) {
     ll cur_node = top.second;
 
     if (cur_weight > d[cur_node]) {
-      continue;  // Skip outdated nodes
+      continue;
     }
 
     if(cur_node == dest) {
@@ -52,3 +52,21 @@ ll dijkstra(ll src, ll dest) {
 
   return -1;
 }
+
+/// delete all rels used to get to node with shortest path
+/*
+ll c = dest;
+while (c != src) {
+  graf[p[c]].rels.erase(
+    std::remove_if(
+      graf[p[c]].rels.begin(), 
+      graf[p[c]].rels.end(), 
+      [c](const Rel& r) { 
+        return r.dest == c;
+      }), 
+      graf[p[c]].rels.end()
+    );
+  c = p[c];
+}
+*/
+
