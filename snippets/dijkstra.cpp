@@ -52,6 +52,7 @@ ll dijkstra(ll src, ll dest) {
 
   return -1;
 }
+// add basic dijkstra algorithm as an example without priority queue that will travel all the possible paths
 
 /// delete all rels used to get to node with shortest path
 /*
