@@ -1,24 +1,17 @@
 #include <bits/stdc++.h>
 #include <limits.h>
 
-typedef int ll;
+typedef long long ll;
 typedef std::string str;
 typedef std::pair<ll, ll> llPair;
 
 template <typename T>
 using vec = std::vector<T>;
 
-struct Rel {
-  ll weight;
-  ll dest;
-};
+ll n, m;
 
-struct Node {
-  vec<Rel> rels;
-};
-
-ll dijkstra(vec<Node> g, ll from, ll to) {
-  vec<ll> d(g.size(), INT_MAX);
+ll dijkstra(vec<vec<ll>> g, ll from, ll to) {
+  vec<ll> d(g.size(), LLONG_MAX);
   d[from] = 0;
   vec<ll> p(g.size(), -1);
   std::priority_queue<llPair, vec<llPair>, std::greater<llPair>> pq;
@@ -38,40 +31,35 @@ ll dijkstra(vec<Node> g, ll from, ll to) {
       return d[to];
     }
 
-    for (Rel r : g[cur_node].rels) {
-      ll new_dist = d[cur_node] + r.weight;
-      if (new_dist < d[r.dest]) {
-        d[r.dest] = new_dist;
-        p[r.dest] = cur_node;
-        pq.push({new_dist, r.dest});
+    for(ll i = 1; i < (n + 1); i++) {
+      if(g[cur_node][i] > 0) {
+        ll new_dist = d[cur_node] + g[cur_node][i];
+        if(new_dist < d[i]) {
+          d[i] = new_dist;
+          p[i] = cur_node;
+          pq.push({new_dist, i});
+        }
       }
-    }
+    } 
   }
 
   return -1;
 }
 
-ll n, m;
-vec<Node> graph;
+vec<vec<ll>> graph;
 
-ll min = INT_MAX;
+ll min = LLONG_MAX;
 
-void dfs(ll weight, vec<ll> cpath, ll curr) {
+vec<ll> cpath;
+
+void dfs(ll weight, ll curr) {
   cpath.push_back(curr);
   if(curr == n) {
-    vec<Node> g = graph;
+    vec<vec<ll>> g = graph;
     for(ll i = 0; i < (cpath.size() - 1); i++) {
       ll to_del = cpath[i+1];
       ll p = cpath[i];
-      g[p].rels.erase(
-        std::remove_if(
-          g[p].rels.begin(), 
-          g[p].rels.end(), 
-          [to_del](const Rel& r) { 
-            return r.dest == to_del;
-        }), 
-        g[p].rels.end()
-      );
+      g[p][to_del] = 0;
     }
     ll dij = dijkstra(g, 1, n);
     if(dij != -1) {
@@ -79,9 +67,12 @@ void dfs(ll weight, vec<ll> cpath, ll curr) {
     }
   }
 
-  for (Rel r : graph[curr].rels) {
-    dfs(weight + r.weight, cpath, r.dest);
+  for(ll i = 1; i < (n + 1); i++) {
+    if(graph[curr][i] > 0) {
+      dfs(weight + graph[curr][i], i);
+    }
   }
+  cpath.pop_back();
 }
 
 
@@ -92,18 +83,18 @@ int main() {
 
   std::cin>>n>>m;
 
-  graph = vec<Node>(n + 1);
+  graph = vec<vec<ll>>(n + 1, vec<ll>(n + 1, 0));
 
   while (m--) {
     ll a, b, c;
     std::cin>>a>>b>>c;
-    graph[a].rels.push_back({c, b});
+    graph[a][b] = c;
   }
 
 
-  dfs(0, {}, 1);
+  dfs(0, 1);
 
-  if(min == INT_MAX) {
+  if(min == LLONG_MAX) {
     std::cout<<-1;
   } else {
     std::cout<<min;
