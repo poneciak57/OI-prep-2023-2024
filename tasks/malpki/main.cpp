@@ -6,6 +6,7 @@ template <typename T>
 using vec = std::vector<T>;
 
 struct M {
+  ll depth;
   ll left;
   ll right;
 };
@@ -16,46 +17,54 @@ vec<ll> zrzucone;
 // graf[from][to];
 vec<vec<bool>> graf;
 
-
-// return true if monkey `m` has way to root
-void throw_all_disconected(ll sec) {
-  vec<bool> v = vec<bool>(malpki.size(), false);
-  ll n = 1;
-  std::queue<ll> queue;
-  queue.push(n);
-  v[n] = true;
-  while(!queue.empty()) {
-    n = queue.front();
-    queue.pop();
-    for (ll i = 1; i < graf.size(); i++) {
-      if(!v[i] && graf[i][n]) {
-        queue.push(i);
-        v[i] = true;
-      }
+void dfs_depth(ll n, ll depth) {
+  if (malpki[n].depth != -1) {
+    return ;
+  }
+  malpki[n].depth = depth;
+  for (ll to = 1; to < graf.size(); to++) {
+    if(graf[n][to] && malpki[to].depth == -1) {
+      dfs_depth(to, depth + 1);
     }
-    for (ll i = 1; i < graf.size(); i++) {
-      if(!v[i] && graf[n][i]) {
-        queue.push(i);
-        v[i] = true;
-      }
+    if(graf[to][n] && malpki[to].depth == -1) {
+      dfs_depth(to, depth + 1);
     }
   } 
-  for (ll i = 1; i < v.size(); i++) {
-    if(v[i] == false) {
-      zrzucone[i] = sec;
+}
+
+void dfs_throw(ll n, ll sec) {
+  for (ll to = 0; to < graf.size(); to++) {
+    if(graf[n][to] && zrzucone[to] == -1) {
+      zrzucone[to] = sec;
+      dfs_throw(to, sec);
     }
   }
 }
 
-// adds monkey to monkeys and adds relation for that monkey in graf
-void add_monkey(ll m, ll l, ll r) {
-    malpki.push_back({l, r});
-    if(l != -1) {
-     graf[m][l] = 1;
+bool ishold(ll n) {
+  for (ll i = 1; i < graf.size(); i++) {
+    if(malpki[i].depth < malpki[n].depth && (graf[n][i] || graf[i][n])) {
+      return true;
     }
-    if(r != -1) {
-      graf[m][r] = 1;
+  }
+  return false;
+}
+
+void release(ll from, ll to, ll sec) {
+  graf[from][to] = false;
+  if(malpki[from].depth > malpki[to].depth) {
+    if (ishold(from)) {
+      return;
     }
+    zrzucone[from] = sec;
+    dfs_throw(from, sec);
+  } else {
+    if (ishold(to)) {
+      return;
+    }
+    zrzucone[to] = sec;
+    dfs_throw(to, sec);
+  }
 }
 
 int main() {
@@ -66,17 +75,20 @@ int main() {
   ll n, m;
   std::cin>>n>>m;
   malpki.push_back({-1, -1});
-  zrzucone = vec<ll>(n+1, -1);
-  graf = vec<vec<bool>>(n+1, vec<bool>(n+1, 0));
+  zrzucone = vec<ll>(n + 1, -1);
+  graf = vec<vec<bool>>(n + 1, vec<bool>(n + 1, 0));
 
   ll m_count = 1;
   while (n--) {
     ll l, r;
     std::cin>>l>>r;
-    add_monkey(m_count, l, r);
+    malpki.push_back({-1, l, r});
+    graf[m_count][l + (l == -1)] = true;
+    graf[m_count][r + (r == -1)] = true;
     m_count++;
   }
 
+  dfs_depth(1, 1);
   ll sec = 0;
   while (m--) {
     ll monke, hand;
@@ -85,18 +97,11 @@ int main() {
     
     if(hand == 1) {
       //left
-      if(zrzucone[curr_monke.left] == -1) {
-        graf[monke][curr_monke.left] = false;
-        throw_all_disconected(sec);
-      }
+      release(monke, curr_monke.left, sec);
     } else {
       //right
-      if(zrzucone[curr_monke.right] == -1) {
-        graf[monke][curr_monke.right] = false;
-        throw_all_disconected(sec);
-      }
+      release(monke, curr_monke.right, sec);
     }
-
 
     sec++;
   }
