@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <float.h>
 
 typedef int ll;
 typedef std::string str;
