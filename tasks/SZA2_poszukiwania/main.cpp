@@ -18,28 +18,29 @@ int main() {
   std::cin>>n;
 
   vec<vec<ll>> mat(n + 1, vec<ll>(n + 1, 0));
-  vec<vec<ll>> mat2(n + 1, vec<ll>(n + 1, 0));
-  
-  mat2[0][1] = 1;
 
+  mat[0][1] = 1;
   for (ll i = 1; i <= n; i++) {
     for (ll j = 1; j <= n; j++) {
       ll t;
       std::cin>>t;
-      if(mat[i - 1][j] == mat[i][j - 1]) {
-        mat[i][j] = mat[i - 1][j] + t;
-        mat2[i][j] = (mat2[i - 1][j] + mat2[i][j - 1]) % MOD;
-      } else if(mat[i - 1][j] > mat[i][j - 1]) {
-        mat[i][j] = mat[i - 1][j] + t;
-        mat2[i][j] = mat2[i - 1][j];
+      if (t == 1) {
+        mat[i][j] = 0;
       } else {
-        mat[i][j] = mat[i][j - 1] + t;
-        mat2[i][j] = mat2[i][j - 1];
+        mat[i][j] = (mat[i - 1][j] + mat[i][j - 1]) % MOD;
       }
     }
   }
 
-  std::cout<<mat2[n][n];
+  /*
+  for (auto row : mat) {
+    for (auto c : row) {
+      std::cout<<c<<" ";
+    }
+    std::cout<<"\n";
+  }
+  */
+  std::cout<<mat[n][n];
 
   std::cout.flush();
 }

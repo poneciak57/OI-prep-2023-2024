@@ -10,7 +10,7 @@ template <typename T>
 using vec = std::vector<T>;
 
 vec<int> b; //banknoty (nominaly)
-vec<int> c; //ilosc
+vec<int> ban;
 
 void print_mat(vec<vec<int>>& mat) {
   for (auto row : mat) {
@@ -22,26 +22,26 @@ void print_mat(vec<vec<int>>& mat) {
 }
 
 void solve(int k) {
-  vec<vec<int>> solves(b.size() + 1, vec<int>(k + 1, INT_MAX - 100));
-  
-  for (int i = 0; i < solves.size(); i++) {
+  vec<vec<int>> solves(ban.size() + 1, vec<int>(k + 1, -1));
+  solves[0][0] = 0;
+  for (int i = 1; i < solves.size(); i++) {
     for (int j = 0; j < solves[0].size(); j++) {
-      if (i == 0 || j == 0) {
+      if(j == 0) {
         solves[i][j] = 0;
-        continue;
       }
-      if(solves[i - 1][j] != 0) {
-        solves[i][j] = solves[i - 1][j];
-      }
-      for(int count = 1; (count <= c[i - 1] && (j - b[i - 1]*count) >= 0); count++) {
-        if(solves[i - 1][j - b[i - 1] * count] == 0 && i != 1) {
-          continue;
+      if(j-ban[i] >= 0 && solves[i - 1][j - ban[i]] != -1) {
+        if(solves[i - 1][j] != -1) {
+          solves[i][j] = std::min(solves[i - 1][j], solves[i - 1][j - ban[i]] + 1);
+        } else {
+          solves[i][j] = solves[i - 1][j - ban[i]] + 1;
         }
-        solves[i][j] = std::min(solves[i][j], solves[i - 1][j - b[i - 1] * count] + count); 
+      } else {
+        solves[i][j] = solves[i - 1][j];
       }
     }
   }
-  print_mat(solves);
+  std::cout<<solves[ban.size()][k];
+  //print_mat(solves);
 }
 
 int main() {
@@ -61,7 +61,9 @@ int main() {
   for (int i = 0; i < n; i++) {
     int t_c;
     std::cin>>t_c;
-    c.push_back(t_c);
+    while (t_c--) {
+      ban.push_back(b[i]);
+    }
   }
 
   int k;
