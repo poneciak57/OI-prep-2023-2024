@@ -24,9 +24,9 @@ int main() {
   int prev = 0;
 
   // pierwszy zakres jest do smieci bo nie zawiera samogloski
-  vec<int> ranges;
+  vec<ll> ranges;
 
-  int count = -1;
+  ll count = -1;
   for (int i = 0; i < s.length(); i++) {
     char c = s[i];
     if(c == 'a' || c == 'e' || c == 'o' || c == 'y' || c == 'i' || c == 'u') {
