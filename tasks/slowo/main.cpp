@@ -23,9 +23,6 @@ int main() {
 
   int prev = 0;
 
-  // pierwszy zakres jest do smieci bo nie zawiera samogloski
-  vec<ll> ranges;
-
   ll count = -1;
   for (int i = 0; i < s.length(); i++) {
     char c = s[i];
@@ -40,7 +37,6 @@ int main() {
   }
   count--;
 
-  //print_vec(ranges);
   std::cout<<count;
 
 

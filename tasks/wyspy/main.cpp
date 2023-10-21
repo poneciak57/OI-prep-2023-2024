@@ -21,32 +21,34 @@ struct GreaterHeight {
   }
 };
 
+vec<int> trans_t = { -1, 0, -1, -1, -1, 1, -1, -1, 2};
 
 int dijkstra(int src, int dest) {
-  vec<int> d(graph.size(), INT_MAX);
-  d[src] = 0;
+  vec<vec<int>> d(graph.size(), vec<int>(4, INT_MAX));
+  d[src][0] = 0;
+  d[src][1] = 0;
+  d[src][2] = 0;
   
-  vec<int> trans(graph.size(), -1);
   std::priority_queue<QEntry, vec<QEntry>, GreaterHeight> pq;
-  pq.push({0, src, -1});
+  pq.push({0, src, 3});
 
   while (!pq.empty()) {
     QEntry e = pq.top();
     pq.pop();
 
     if(e.node == dest) {
-      return d[dest];
+      return e.dist;
     }
 
-    if(e.dist > d[e.node]) {
+    if(e.dist > d[e.node][trans_t[e.trans]]) {
       continue;
     }
 
     for(int i = 0; i < graph.size(); i++) {
       if(graph[i][e.node] != 0 && graph[i][e.node] != e.trans) {
         int new_dist = e.dist + graph[i][e.node];
-        if(new_dist < d[i]) {
-          d[i] = new_dist;
+        if(new_dist < d[i][trans_t[graph[i][e.node]]]) {
+          d[i][trans_t[graph[i][e.node]]] = new_dist;
           pq.push({new_dist, i, graph[i][e.node]});
         }
       }
