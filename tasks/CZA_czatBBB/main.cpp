@@ -35,7 +35,7 @@ int main() {
   for(ll i = pref_pos; i < pref_pos_end; i++) {
 
     //handle next char adding
-
+    
     // handle looping skip
     // handle it correctly when we started printing earlier
 
