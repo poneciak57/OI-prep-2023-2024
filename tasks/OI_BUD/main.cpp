@@ -78,6 +78,13 @@ bool can_we(int l) {
       return false;
     }
 
+    int h_l = h_to - h_from;
+    int v_l = v_to - v_from;
+
+    if((h_cut_max >= l && v_l >= l) || (v_cut_max >= l && h_l >= l)) {
+      return true;
+    }
+
     if(((h_cut_max + 1 < l) || v_cut_max < l) && (h_cut_max < l || (v_cut_max + 1) < l)) {
       return false;
     }
