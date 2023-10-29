@@ -7,7 +7,25 @@ typedef std::pair<ll, ll> llPair;
 template <typename T>
 using vec = std::vector<T>;
 
-int buckets[1000001];
+vec<int> tab;
+
+void insertion_sort() {
+  int n = tab.size();
+  int i = 1;
+  
+  while(i < n) {
+    int j = i - 1;
+    int k = tab[i];
+
+    while(j >= 0 && tab[j] > k) {
+      tab[j + 1] = tab[j];
+      j--;
+    }
+    tab[j + 1] = k;
+    i++;
+  }
+}
+
 
 int main() {
   std::ios_base::sync_with_stdio(false);
@@ -20,13 +38,13 @@ int main() {
   while(n--) {
     int t;
     std::cin>>t;
-    buckets[t]++;
+    tab.push_back(t);
   }
 
-  for(int i = 0; i<=1000000; i++) {
-    while(buckets[i]--) {
-      std::cout<<i<<" ";
-    }
+  insertion_sort();
+
+  for(auto i : tab) {
+    std::cout<<i<<" ";
   }
 
   std::cout.flush();

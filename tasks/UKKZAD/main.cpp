@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <type_traits>
 
 typedef long long ll;
 typedef std::string str;
@@ -8,36 +7,68 @@ typedef std::pair<ll, ll> llPair;
 template <typename T>
 using vec = std::vector<T>;
 
+vec<ll> tab;
+ll count = 0;
+
+void merge(ll b, ll e) {
+  vec<ll> temp;
+  std::copy(tab.begin() + b, tab.begin() + e, std::back_inserter(temp));
+
+  ll mid = temp.size() / 2;
+  ll start1 = 0, start2 = mid;
+  ll i = b;
+
+  while(start1 < mid && start2 < temp.size()) {
+    if(temp[start1] < temp[start2]) {
+      tab[i] = temp[start1]; 
+      start1++;
+    } else {
+      tab[i] = temp[start2];
+      start2++;
+      count+=mid-start1;
+    }
+    i++;
+  }
+
+  while (start1 < mid)
+  {
+    tab[i] = temp[start1];
+    start1++;
+    i++;
+  }
+
+  while (start2 < temp.size())
+  {
+    tab[i] = temp[start2];
+    start2++;
+    i++;
+  }
+
+}
+
+void mergesort(ll b, ll e) {
+  if(b + 1 >= e) { return; }
+  // std::cout<<"mergesort: "<<b<<" "<<e<<"\n";
+  mergesort(b, (b + e)/2);
+  mergesort((b + e)/2, e);
+  merge(b, e);
+}
 
 int main() {
   std::ios_base::sync_with_stdio(false);
   std::cout.tie(nullptr);
   std::cin.tie(nullptr);
-  
-  int n;
+
+  ll n;
   std::cin>>n;
-
-  vec<int> tab;
-  tab.push_back(-1);
-
   while(n--) {
-    int t;
+    ll t;
     std::cin>>t;
     tab.push_back(t);
   }
 
-  ll count = 0;
-
-  for(int j = 1; j < tab.size(); j++) {
-    int i = j;
-    while(i >= 1) {
-      count+= tab[j] < tab[i];
-      i--;
-    }
-  }
+  mergesort(0, tab.size());
 
   std::cout<<count;
-
-
   std::cout.flush();
 }
