@@ -60,79 +60,36 @@ bool check_ones() {
   return done;
 }
 
-struct QEntry {
-  ll dist;
-  ll btn_id;
-  bool top_down;
-};
 
-struct GreaterDist {
-  bool operator()(QEntry const& qe1, QEntry const& qe2) {
-    return qe1.dist > qe2.dist;
-  }
-};
-
-vec<ll> selected;
+// [direction][bid] 
+// direction - 0 when left or right
+// direction - 1 when top or down
+vec<vec<bool>> visited;
+std::set<ll> selected;
 
 // top_down if true it means we go down or up if false we go left or right it helps with finding only even cycles
-void dijkstra(ll start_bid) {
-  vec<ll> d(buttons.size(), INT_MAX);
-  vec<ll> p(buttons.size(), -1);
-
-  std::priority_queue<QEntry, vec<QEntry>, GreaterDist> pq;
-
-  pq.push({0, start_bid, false});
-  while (!pq.empty())
-  {
-    auto [dist, bid, td] = pq.top();
-    pq.pop();
-
-    // std::cout<<"call: "<<bid<<"\n";
-
-    ll new_dist = dist + 1;
-    bool new_td = !td;
-
-    if(dist > d[bid]) {
-      continue;
-    }
-
-    if(bid == start_bid && dist != 0) {
-      selected.push_back(bid);
-      ll cp = p[bid];
-      p[bid] = -1;
-      while(cp != -1) {
-        selected.push_back(cp);
-        cp = p[cp];
-        p[selected.back()] = -1;
-      }
-      selected.pop_back();
-      break;
-    }
-
-    if (td) {
-      for(auto b : cols[buttons[bid].col]) {
-        if(b != bid && d[b] > new_dist) {
-          pq.push({new_dist, b, new_td});
-          d[b] = new_dist;
-          p[b] = bid;
+bool dfs(ll bid, bool top_down) {
+  visited[top_down][bid] = true;
+  if (top_down) {
+    for(auto b : cols[buttons[bid].col]) {
+      if(b != bid) {
+        if (visited[!top_down][b] || dfs(b, !top_down)) {
+          selected.insert(bid);
+          return true;
         }
       }
-      // std::cout<<"top-down\n";
-    } else {
-      for(auto b : rows[buttons[bid].row]) {
-        if(b != bid && d[b] > new_dist) {
-          pq.push({new_dist, b, new_td});
-          d[b] = new_dist;
-          p[b] = bid;
+    }
+  } else {
+    for(auto b : rows[buttons[bid].row]) {
+      if(b != bid) {
+        if (visited[!top_down][b] || dfs(b, !top_down)) {
+          selected.insert(bid);
+          return true;
         }
       }
-      // std::cout<<"left-right\n";
     }
-    // for(auto v : p){
-    //     std::cout<<v<<" ";
-    //   }
-    //   std::cout<<"\n";
   }
+  return false;
 }
 
 void print_for_even() {
@@ -152,11 +109,13 @@ void print_for_even() {
     }
   }
 
-  dijkstra(b1);
+  visited = vec<vec<bool>>(2, vec<bool>(buttons.size(), false));
 
-  std::cout<<selected.size()<<"\n";
-  for(auto s : selected) {
-    std::cout<<s<<" ";
+  if(dfs(b1, false)) {
+    std::cout<<selected.size()<<"\n";
+    for(auto s : selected) {
+      std::cout<<s<<" ";
+    }
   }
   
 }

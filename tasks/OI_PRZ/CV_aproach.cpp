@@ -60,105 +60,46 @@ bool check_ones() {
   return done;
 }
 
-struct QEntry {
-  ll dist;
-  ll btn_id;
-  bool top_down;
-};
-
-struct GreaterDist {
-  bool operator()(QEntry const& qe1, QEntry const& qe2) {
-    return qe1.dist > qe2.dist;
-  }
-};
-
-vec<ll> selected;
-
-// top_down if true it means we go down or up if false we go left or right it helps with finding only even cycles
-void dijkstra(ll start_bid) {
-  vec<ll> d(buttons.size(), INT_MAX);
-  vec<ll> p(buttons.size(), -1);
-
-  std::priority_queue<QEntry, vec<QEntry>, GreaterDist> pq;
-
-  pq.push({0, start_bid, false});
-  while (!pq.empty())
-  {
-    auto [dist, bid, td] = pq.top();
-    pq.pop();
-
-    // std::cout<<"call: "<<bid<<"\n";
-
-    ll new_dist = dist + 1;
-    bool new_td = !td;
-
-    if(dist > d[bid]) {
-      continue;
-    }
-
-    if(bid == start_bid && dist != 0) {
-      selected.push_back(bid);
-      ll cp = p[bid];
-      p[bid] = -1;
-      while(cp != -1) {
-        selected.push_back(cp);
-        cp = p[cp];
-        p[selected.back()] = -1;
-      }
-      selected.pop_back();
-      break;
-    }
-
-    if (td) {
-      for(auto b : cols[buttons[bid].col]) {
-        if(b != bid && d[b] > new_dist) {
-          pq.push({new_dist, b, new_td});
-          d[b] = new_dist;
-          p[b] = bid;
-        }
-      }
-      // std::cout<<"top-down\n";
-    } else {
-      for(auto b : rows[buttons[bid].row]) {
-        if(b != bid && d[b] > new_dist) {
-          pq.push({new_dist, b, new_td});
-          d[b] = new_dist;
-          p[b] = bid;
-        }
-      }
-      // std::cout<<"left-right\n";
-    }
-    // for(auto v : p){
-    //     std::cout<<v<<" ";
-    //   }
-    //   std::cout<<"\n";
-  }
-}
 
 void print_for_even() {
   // sorting for searching of cycles
   for(int i = 1; i <= n; i++) {
-    std::sort(rows[i].begin(), rows[i].end(), [](ll l1, ll l2){ return buttons[l1].col < buttons[l2].col; });
-    std::sort(cols[i].begin(), cols[i].end(), [](ll l1, ll l2){ return buttons[l1].row < buttons[l2].row; });
+    std::sort(rows[i].begin(), rows[i].end(), [](ll &l1, ll &l2){ return buttons[l1].col < buttons[l2].col; });
+    std::sort(cols[i].begin(), cols[i].end(), [](ll &l1, ll &l2){ return buttons[l1].row < buttons[l2].row; });
   }
 
 
-  ll b1;
-  // first we find first avaible button 
+  B bb1, bb2;
+  B be1, be2;
+  std::set<ll> selected;
+
+  // we find first and last from bottom site
   for(ll i = 1; i <= n; i++) {
     if(rows[i].size() > 0) {
-      b1 = rows[i][0];
+      bb1 = buttons[rows[i].front()];
+      bb2 = buttons[rows[i].back()];
+      selected.insert(rows[i].front());
+      selected.insert(rows[i].back());
       break;
     }
   }
 
-  dijkstra(b1);
-
-  std::cout<<selected.size()<<"\n";
-  for(auto s : selected) {
-    std::cout<<s<<" ";
+  // we find first and last from top site
+  for(ll i = n; i >= 1; i--) {
+    if(rows[i].size() > 0) {
+      be1 = buttons[rows[i].front()];
+      be2 = buttons[rows[i].back()];
+      selected.insert(rows[i].front());
+      selected.insert(rows[i].back());
+      break;
+    }
   }
+
+  // now i need to find the convex hull of the set of buttons
+  // we know it always exists and it is the even solution for our problem
+  // we need to search for a path from bb1 to be1 or be2
   
+  vec<bool> visited_row1(n + 1, false); // if we visited row
 }
 
 // Zadanie PRZ Kacper Poneta
