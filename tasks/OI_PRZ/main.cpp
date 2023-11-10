@@ -89,7 +89,6 @@ void dijkstra(ll start_bid) {
 
     // std::cout<<"call: "<<bid<<"\n";
 
-    ll new_dist = dist + 1;
     bool new_td = !td;
 
     if(dist > d[bid]) {
@@ -111,6 +110,7 @@ void dijkstra(ll start_bid) {
 
     if (td) {
       for(auto b : cols[buttons[bid].col]) {
+        ll new_dist = dist + std::abs(buttons[b].row - buttons[bid].row);
         if(b != bid && d[b] > new_dist) {
           pq.push({new_dist, b, new_td});
           d[b] = new_dist;
@@ -120,6 +120,7 @@ void dijkstra(ll start_bid) {
       // std::cout<<"top-down\n";
     } else {
       for(auto b : rows[buttons[bid].row]) {
+        ll new_dist = dist + std::abs(buttons[b].col - buttons[bid].col);
         if(b != bid && d[b] > new_dist) {
           pq.push({new_dist, b, new_td});
           d[b] = new_dist;
