@@ -1,0 +1,10 @@
+nid: 1
+nid: 2
+nid: 4
+nid: 1
+nid: 4
+nid: 6
+nid: 1
+nid: 2
+nid: 4
+0 1 -1 1 -1 2 

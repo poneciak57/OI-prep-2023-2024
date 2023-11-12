@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define INF 1000000007
 
 typedef long long ll;
 typedef std::string str;
@@ -6,6 +7,7 @@ typedef std::pair<ll, ll> llPair;
 
 template <typename T>
 using vec = std::vector<T>;
+
 
 
 int main() {

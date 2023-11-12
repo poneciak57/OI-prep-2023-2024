@@ -1,0 +1,13 @@
+c: A left: B right: D
+c: B left: C right: -1
+c: C left: -1 right: -1
+c: D left: E right: F
+c: E left: -1 right: -1
+c: F left: -1 right: -1
+CBEFDA
+c: d left: b right: e
+c: b left: a right: c
+c: a left: -1 right: -1
+c: c left: -1 right: -1
+c: e left: -1 right: -1
+acbed
