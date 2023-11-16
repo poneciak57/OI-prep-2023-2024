@@ -1,1 +1,11 @@
-1 2 3 4 5 
+starts popping: 
+top: 0  height: 2
+starts popping: 
+top: 2  height: 3
+starts popping: 3 
+top: 2  height: 2
+starts popping: 
+top: 2  height: 5
+starts popping: 5 
+top: 2  height: 4
+1

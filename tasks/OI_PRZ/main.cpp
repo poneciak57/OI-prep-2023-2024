@@ -13,7 +13,7 @@ struct B {
   bool active = true;
 };
 
-ll n, m, sqrt_n;
+ll n, m;
 vec<B> buttons;
 vec<vec<ll>> rows;
 vec<vec<ll>> cols;
@@ -109,47 +109,24 @@ void dijkstra(ll start_bid) {
     }
 
     if (td) {
-      if(cols[buttons[bid].col].size() >= sqrt_n) {
-        for(auto b : cols[buttons[bid].col]) {
-          ll new_dist = dist + std::abs(buttons[b].row - buttons[bid].row);
-          if(b != bid && d[b] > new_dist) {
-            pq.push({new_dist, b, new_td});
-            d[b] = new_dist;
-            p[b] = bid;
-          }
-        }
-      } else {
-        for(auto b : cols[buttons[bid].col]) {
-          ll new_dist = dist + 1;
-          if(b != bid && d[b] > new_dist) {
-            pq.push({new_dist, b, new_td});
-            d[b] = new_dist;
-            p[b] = bid;
-          }
+      for(auto b : cols[buttons[bid].col]) {
+        ll new_dist = dist + std::abs(buttons[b].row - buttons[bid].row);
+        if(b != bid && d[b] > new_dist) {
+          pq.push({new_dist, b, new_td});
+          d[b] = new_dist;
+          p[b] = bid;
         }
       }
       // std::cout<<"top-down\n";
     } else {
-      if(rows[buttons[bid].row].size() >= sqrt_n) {
-        for(auto b : rows[buttons[bid].row]) {
-          ll new_dist = dist + std::abs(buttons[b].col - buttons[bid].col);
-          if(b != bid && d[b] > new_dist) {
-            pq.push({new_dist, b, new_td});
-            d[b] = new_dist;
-            p[b] = bid;
-          }
-        }
-      } else {
-        for(auto b : rows[buttons[bid].row]) {
-          ll new_dist = dist + 1;
-          if(b != bid && d[b] > new_dist) {
-            pq.push({new_dist, b, new_td});
-            d[b] = new_dist;
-            p[b] = bid;
-          }
+      for(auto b : rows[buttons[bid].row]) {
+        ll new_dist = dist + std::abs(buttons[b].col - buttons[bid].col);
+        if(b != bid && d[b] > new_dist) {
+          pq.push({new_dist, b, new_td});
+          d[b] = new_dist;
+          p[b] = bid;
         }
       }
-      
       // std::cout<<"left-right\n";
     }
     // for(auto v : p){
@@ -192,7 +169,7 @@ int main() {
   std::cin.tie(nullptr);
 
   std::cin>>n>>m;
-  sqrt_n = sqrt(n);
+
   buttons.push_back({-1, -1});
 
   rows = vec<vec<ll>>(n + 1);

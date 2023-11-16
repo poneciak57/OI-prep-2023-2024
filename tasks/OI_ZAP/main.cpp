@@ -33,6 +33,10 @@ int main() {
 
   ll n;
   std::cin>>n;
+  if(n <= 1) {
+    std::cout<<0;
+    return 0;
+  }
 
   uint t_start, t_end;
   list.push_back({0, 0, 0});
@@ -42,7 +46,7 @@ int main() {
   }
 
   std::sort(list.begin(), list.end(), [](const Lecture &l1, const Lecture &l2){ return l1.end < l2.end; });
-  list.push_back({0, INT_MAX, INT_MAX});
+  list.push_back({0, 0, INT_MAX});
 
   // for(auto l : list) {
   //   std::cout<<l.num<<" ";
@@ -59,34 +63,59 @@ int main() {
   }
   pl.push_back(n+1);
 
+  // for(auto p : pl) {
+  //   std::cout<<list[p].num<<" ";
+  // }
+  // std::cout<<"\n";
 
-  //now for each lecture from pl (except first and last -> these are just bounds) we need to find replacement
-  // if one lecture dont have replacement we set repl to that lecture num 
-  // and each next lecture can be replaced by it so we skip searching part
   int repl = -1;
+  bool flag = false;
   vec<llPair> solves;
-  for(int i = 1; i < (pl.size() - 1); i++) {
-    // repl exists so we just print the rest of the sequence
+  int prev_pick_main = INT_MAX;
+  int prev_pick_repl = INT_MAX;
+  for(int i = pl.size() - 2; i >= 1; i--) {
+
     if(repl != -1) {
       solves.push_back({list[pl[i]].num, repl});
       continue;
     }
 
-    uint start_bound_end = list[pl[i - 1]].end;
-    uint end_bound_start = list[pl[i + 1]].start;
-    uint curr_num = list[pl[i]].num;
-    bool found = false;
+    uint bound_right_main = prev_pick_repl;
+    uint bound_right_repl = prev_pick_main;
+    // uint bound_left = list[pl[i - 1]].end;
 
+    uint min_bound = std::min(bound_right_main, bound_right_repl);
+
+
+    int highest_start = list[pl[i - 1]].end;
+    int hs_main_id = -1;
     for(int j = pl[i + 1]; j > pl[i - 1]; j--) {
-      if(!list[j].is_pl && list[j].end <= end_bound_start && list[j].start >= start_bound_end) {
-        solves.push_back({curr_num, list[j].num});
-        found = true;
-        break;
+      if(list[j].end <= min_bound && list[j].start >= highest_start) {
+        highest_start = list[j].start;
+        hs_main_id = j;
       }
     }
-    if(!found) {
-      repl = curr_num;
+    highest_start = list[pl[i - 1]].end;
+    int hs_repl_id = -1;
+    for(int j = pl[i + 1]; j > pl[i - 1]; j--) {
+      if(list[j].end <= bound_right_repl && list[j].start >= highest_start && j != hs_main_id) {
+        highest_start = list[j].start;
+        hs_repl_id = j;
+      }
     }
+
+    // std::cout<<"main: "<<list[hs_main_id].num<<"\n";
+    // std::cout<<"repl: "<<list[hs_repl_id].num<<"\n";
+    if(hs_main_id == -1 || hs_repl_id == -1) {
+      //means we couldnt even find any replacment in given range
+      repl = list[pl[i]].num;
+      continue;
+    }
+
+    prev_pick_main = list[hs_main_id].start;
+    prev_pick_repl = list[hs_repl_id].start;
+    solves.push_back({list[hs_main_id].num, list[hs_repl_id].num});
+
   }
 
   std::cout<<solves.size()<<"\n";

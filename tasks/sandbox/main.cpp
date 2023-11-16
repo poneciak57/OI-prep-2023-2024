@@ -7,7 +7,6 @@ typedef std::pair<ll, ll> llPair;
 template <typename T>
 using vec = std::vector<T>;
 
-int buckets[1000001];
 
 int main() {
   std::ios_base::sync_with_stdio(false);
@@ -17,17 +16,25 @@ int main() {
   ll n;
   std::cin>>n;
 
+  std::stack<ll> heights;
+  heights.push(0);
+  ll count = 0;
   while(n--) {
-    int t;
-    std::cin>>t;
-    buckets[t]++;
+    ll len, height;
+    std::cin>>len>>height;
+
+    while(heights.top() > height) {
+      heights.pop();
+    }
+
+    if(heights.top() != height) {
+      count++;
+    }
+    heights.push(height);
   }
 
-  for(int i = 0; i<=1000000; i++) {
-    while(buckets[i]--) {
-      std::cout<<i<<" ";
-    }
-  }
+  std::cout<<count;
+
 
   std::cout.flush();
 }
