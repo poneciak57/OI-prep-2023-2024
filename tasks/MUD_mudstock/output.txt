@@ -1,0 +1,13 @@
+kolej: 0 sum: 18
+sum_left: 105 sum_right: 6
+sum_left: 147 sum_right: 0
+kolej: 1 sum: 27
+sum_left: 117 sum_right: 12
+sum_left: 159 sum_right: 6
+sum_left: 205 sum_right: 0
+kolej: 2 sum: 42
+sum_left: 87 sum_right: 12
+sum_left: 105 sum_right: 6
+sum_left: 155 sum_right: 0
+87 
+0 0
