@@ -26,8 +26,18 @@ int main() {
   while(ni--) {
     int t;
     std::cin>>t;
-    stack_s.push(t);
+    stack_d.push(t);
   }
+
+  while(!stack_d.empty()) {
+    stack_s.push(stack_d.top());
+    stack_d.pop();
+  }
+
+  // while(!stack_s.empty()) {
+  //   std::cout<<stack_s.top()<<"\n";
+  //   stack_s.pop();
+  // }
 
 
   vec<int> moves;
