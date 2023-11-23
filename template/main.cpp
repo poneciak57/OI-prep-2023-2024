@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define INF 1000000007
+#define LL_INF 10000000000000007
 
 typedef long long ll;
 typedef std::string str;
