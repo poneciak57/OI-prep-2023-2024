@@ -9,8 +9,8 @@ using vec = std::vector<T>;
 
 bool can_have(ll v, ll r) {
   ll c = 0;
-  int y = r;
-  for(int x = 0; x <= r; x++) {
+  ll y = r;
+  for(ll x = 0; x <= r; x++) {
     while((x*x + y*y) > (r*r)) {
       y--;
     };
