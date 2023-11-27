@@ -9,32 +9,47 @@ template <typename T>
 using vec = std::vector<T>;
 
 
+vec<vec<int>> graph;
+vec<int> can_reach;
+vec<bool> visited;
+
+void dfs(ll n) {
+  if(visited[n]) return;
+
+  visited[n] = true;
+  can_reach.push_back(n);
+  for(auto r : graph[n]) {
+    dfs(r);
+  }
+}
+
 int main() {
   std::ios_base::sync_with_stdio(false);
   std::cout.tie(nullptr);
   std::cin.tie(nullptr);
   
-  int n = 300;
-  vec<str> answers;
-  for(int i = 0; i < n; i++) {
-    str s;
-    std::cin>>s;
-    vec<bool> is_in_text(26, false);
-    bool flag = true;
-    for(auto c : s) {
-      if(is_in_text[c - 'A']) {
-        flag = false;
-        break;
-      }
-      is_in_text[c - 'A'] = true;
-    }
-    if(flag) {
-      answers.push_back(s);
-    }
+  ll n, m;
+  std::cin>>n>>m;
+
+  graph = vec<vec<int>>(n + 1);
+  visited = vec<bool>(n + 1, false);
+
+  while(m--) {
+    int from, to;
+    std::cin>>from>>to;
+    graph[from].push_back(to);
+    graph[to].push_back(from);
   }
 
-  std::sort(answers.begin(), answers.end());
-  std::cout<<answers.size()<<" "<<answers.back();
+  dfs(1);
+
+  std::sort(can_reach.begin(), can_reach.end());
+
+  std::cout<<can_reach.size()<<"\n";
+  for(auto i : can_reach) {
+    std::cout<<i<<" ";
+  }
+  
 
   std::cout.flush();
 }

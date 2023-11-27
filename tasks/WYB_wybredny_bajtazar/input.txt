@@ -1,0 +1,5 @@
+10 3
+acabbabbac
+3 b c
+4 a b
+3 c a
