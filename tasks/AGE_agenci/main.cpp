@@ -12,6 +12,7 @@ struct QEntry {
   int a;
   int b;
   int time;
+  bool prim;
 };
 
 struct Node {
@@ -19,27 +20,35 @@ struct Node {
 };
 
 vec<Node> graph;
-vec<vec<bool>> was(251, vec<bool>(251, false));
+vec<vec<vec<bool>>> was(251, vec<vec<bool>>(251, vec<bool>(2, false)));
 
 int bfs(int a1, int a2) {
   std::queue<QEntry> q;
-  q.push({a1, a2, 0});
-  was[a1][a2] = true;
+  q.push({a1, a2, 0, false});
+  was[a1][a2][0] = true;
   while(!q.empty()) {
-    auto [a, b, time] = q.front();
+    auto [a, b, time, b_turn] = q.front();
     q.pop();
 
-    if(a == b) {
-      return time;
-    }
     time++;
-    for(int i = 0; i < graph[a].rels.size(); i++) {
-      for(int j = 0; j < graph[b].rels.size(); j++) {
+    bool not_b_turn = !b_turn;
+    if(b_turn) {
+      for(int i = 0; i < graph[b].rels.size(); i++) {
+        int n_b = graph[b].rels[i];
+        if(!was[a][n_b][not_b_turn]) {
+            q.push({a, n_b, time, not_b_turn});
+            was[a][n_b][not_b_turn] = true;
+        }
+      }
+    } else {
+      if(a == b) {
+        return (time-1)/2;
+      }
+      for(int i = 0; i < graph[a].rels.size(); i++) {
         int n_a = graph[a].rels[i];
-        int n_b = graph[b].rels[j];
-        if(!was[n_a][n_b]) {
-          q.push({n_a, n_b, time});
-          was[n_a][n_b] = true;
+        if(!was[n_a][b][not_b_turn]) {
+            q.push({n_a, b, time, not_b_turn});
+            was[n_a][b][not_b_turn] = true;
         }
       }
     }

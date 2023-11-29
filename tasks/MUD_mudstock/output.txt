@@ -1,13 +1,18 @@
-kolej: 0 sum: 18
-sum_left: 105 sum_right: 6
-sum_left: 147 sum_right: 0
-kolej: 1 sum: 27
-sum_left: 117 sum_right: 12
-sum_left: 159 sum_right: 6
-sum_left: 205 sum_right: 0
-kolej: 2 sum: 42
-sum_left: 87 sum_right: 12
-sum_left: 105 sum_right: 6
-sum_left: 155 sum_right: 0
-87 
-0 0
+{ 0, 0, 0 }, { 2, 3, 3 }, { 2, 6, 6 }, { 2, 9, 9 }, { 2, 12, 12 }, 
+{ 0, 0, 0 }, { 3, 4, 4 }, { 1, 7, 7 }, { 2, 10, 10 }, { 3, 14, 14 }, { 1, 17, 17 }, { 2, 20, 20 }, { 3, 24, 24 }, { 1, 27, 27 }, { 2, 30, 30 }, { 3, 34, 34 }, { 1, 37, 37 }, { 2, 40, 40 }, 
+{ 0, 0, 0 }, { 3, 2, 2 }, { 2, 2, 2 }, { 2, 5, 5 }, { 3, 7, 7 }, { 2, 7, 7 }, { 2, 10, 10 }, 
+kolej: 1 sum: 528
+sum_left: 215 sum_right: 408
+sum_left: 241 sum_right: 372
+sum_left: 307 sum_right: 306
+sum_left: 436 sum_right: 216
+sum_left: 493 sum_right: 190
+sum_left: 641 sum_right: 144
+sum_left: 923 sum_right: 84
+sum_left: 1041 sum_right: 68
+sum_left: 1331 sum_right: 42
+sum_left: 1856 sum_right: 12
+sum_left: 2065 sum_right: 6
+sum_left: 2557 sum_right: 0
+613
+2 3

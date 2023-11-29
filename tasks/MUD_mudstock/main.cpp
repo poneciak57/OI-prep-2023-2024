@@ -53,12 +53,12 @@ int main() {
   }
 
 
-  // for(auto k : koleje) {
-  //   for(auto [dist, count, count_sum] : k) {
-  //     std::cout<<"{ "<<dist<<", "<<count<<", "<<count_sum<< " }, ";
-  //   }
-  //   std::cout<<"\n";
-  // }
+  for(auto k : koleje) {
+    for(auto [dist, count, count_sum] : k) {
+      std::cout<<"{ "<<dist<<", "<<count<<", "<<count_sum<< " }, ";
+    }
+    std::cout<<"\n";
+  }
 
   int cur_min = overall_base_count;
   int cur_k = 0, cur_n = 0;
@@ -74,13 +74,13 @@ int main() {
       continue;
     }
 
-    // std::cout<<"kolej: "<<i<<" sum: "<<sum_right<<"\n";
+    std::cout<<"kolej: "<<i<<" sum: "<<sum_right<<"\n";
     for(int j = 1; j < k.size(); j++) {
       auto [dist, count, count_sum] = k[j];
       sum_right -= (k.back().count_sum - k[j - 1].count_sum) * dist;
       count_sum_left += k[j - 1].count;
       sum_left += count_sum_left * dist;
-      // std::cout<<"sum_left: "<<sum_left<<" sum_right: "<<sum_right<<"\n";
+      std::cout<<"sum_left: "<<sum_left<<" sum_right: "<<sum_right<<"\n";
       if((sum_left + sum_right) <= cur_min) {
         cur_min = (sum_left + sum_right);
         cur_k = i + 1;
@@ -90,7 +90,7 @@ int main() {
   }
 
   std::cout<<cur_min<<std::endl;
-  std::cout<<cur_k<<" "<<cur_n;
+  std::cout<<cur_k<<" "<<cur_n<<"\n";
 
   std::cout.flush();
 }

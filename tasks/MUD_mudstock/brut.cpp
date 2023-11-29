@@ -78,7 +78,7 @@ int main() {
   }
 
   std::cout<<min_dist<<"\n";
-  std::cout<<min_k<<" "<<min_n;
+  std::cout<<min_k<<" "<<min_n<<"\n";
   
 
   std::cout.flush();
