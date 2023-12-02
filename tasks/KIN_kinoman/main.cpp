@@ -15,7 +15,8 @@ struct Node {
 
 struct Movie {
   int coolnes;
-  std::deque<int> occured;
+  vec<int> occured;
+  int ind{0};
 };
 
 int n, m, true_n, tmp;
@@ -66,19 +67,19 @@ int main() {
   ll cmax = seg_tree[1].max_pref;
   for(int i = 0; i < n; i++) {
     auto &movie = movies[days[i]];
-    ll f_occur = movie.occured.front();
+    ll f_occur = movie.occured[movie.ind];
     // std::cout<<"f_occur: "<<f_occur<<" movie: "<<days[i]<<"\n";
-    movie.occured.pop_front();
+    movie.ind++;
     update_value(f_occur, 0);
-    if(movie.occured.size()) {
-      ll s_occur = movie.occured.front();
+    if(movie.ind < movie.occured.size()) {
+      ll s_occur = movie.occured[movie.ind];
       // std::cout<<"s_occur: "<<s_occur<<" movie: "<<days[i]<<"\n";
-      movie.occured.pop_front();
+      movie.ind++;
       update_value(s_occur, movie.coolnes);
-      if(movie.occured.size()) {
-        update_value(movie.occured.front(), movie.coolnes * -1);
+      if(movie.ind < movie.occured.size()) {
+        update_value(movie.occured[movie.ind], movie.coolnes * -1);
       }
-      movie.occured.push_front(s_occur);
+      movie.ind--;
     }
     cmax = std::max(cmax, seg_tree[1].max_pref);
     // print_tree();

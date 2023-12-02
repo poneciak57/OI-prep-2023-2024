@@ -90,7 +90,7 @@ void bfs(Pos from, Pos to) {
     }
   }
 
-  std::cout<<"NIE";
+  std::cout<<"NIE\n";
   return;
 }
 

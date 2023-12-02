@@ -23,26 +23,21 @@ struct Rel {
 };
 
 struct Node {
-  bool has_char[26];
   vec<Rel> rels;
 };
 
-int n;
 vec<Node> graph_init;
 vec<Node> graph_rev;
 
 void bfs(int start, int end) {
   queue<QEntry> q;
-  vec<vec<vec<bool>>> visited(2, vec<vec<bool>>(n + 1, vec<bool>(n + 1, false)));
   q.push({start, end, "", false});
+
   while (!q.empty())
   {
     auto [node_init, node_rev, s, is_move_rev] = q.front();
     q.pop();
-    if(visited[is_move_rev][node_init][node_rev]) {
-        continue;
-    }
-    visited[is_move_rev][node_init][node_rev] = true;
+
     if(is_move_rev) {
       // if move on reversed graph
       if(node_init == node_rev) {
@@ -76,9 +71,7 @@ void bfs(int start, int end) {
         return;
       }
       for(auto rel : graph_init[node_init].rels) {
-        if(graph_rev[node_rev].has_char[rel.c - 'a']) {
-          q.push({rel.dest, node_rev, s + rel.c, true});
-        }
+        q.push({rel.dest, node_rev, s + rel.c, true});
       }
     }
   }
@@ -91,7 +84,7 @@ int main() {
   cout.tie(nullptr);
   cin.tie(nullptr);
 
-  int m;
+  int n, m;
   cin>>n>>m;
 
   graph_init = vec<Node> (n + 1);
@@ -101,9 +94,7 @@ int main() {
     int from, to;
     char c;
     cin>>from>>to>>c;
-    graph_init[from].has_char[c - 'a'] = true;
     graph_init[from].rels.push_back({to, c});
-    graph_rev[to].has_char[c - 'a'] = true;
     graph_rev[to].rels.push_back({from, c});
   }
 
