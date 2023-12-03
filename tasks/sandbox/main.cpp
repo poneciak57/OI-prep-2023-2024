@@ -8,44 +8,20 @@ typedef std::pair<ll, ll> llPair;
 template <typename T>
 using vec = std::vector<T>;
 
-struct QEntry {
-  int a;
-  int b;
-  int time;
-};
+const int MAX_SIZE = 1e8;
 
-struct Node {
-  vec<int> rels;
-};
+vec<bool> sito(MAX_SIZE, true);
 
-vec<Node> graph;
-vec<vec<bool>> was(251, vec<bool>(251, false));
-
-int bfs(int a1, int a2) {
-  std::queue<QEntry> q;
-  q.push({a1, a2, 0});
-  was[a1][a2] = true;
-  while(!q.empty()) {
-    auto [a, b, time] = q.front();
-    q.pop();
-
-    if(a == b) {
-      return time;
-    }
-    time++;
-    for(int i = 0; i < graph[a].rels.size(); i++) {
-      for(int j = 0; j < graph[b].rels.size(); j++) {
-        int n_a = graph[a].rels[i];
-        int n_b = graph[b].rels[j];
-        if(!was[n_a][n_b]) {
-          q.push({n_a, n_b, time});
-          was[n_a][n_b] = true;
-        }
+void make_sito() {
+  sito[0] = false;
+  sito[1] = false;
+  for(int i = 2; i < MAX_SIZE; i++) {
+    if(sito[i]) {
+      for(int j = i + i; j < MAX_SIZE; j += i) {
+        sito[j] = false;
       }
     }
   }
-
-  return -1;
 }
 
 int main() {
@@ -53,26 +29,9 @@ int main() {
   std::cout.tie(nullptr);
   std::cin.tie(nullptr);
   
-  int n, m;
-  std::cin>>n>>m;
+  make_sito();
 
-  graph = vec<Node>(n+1);
   
-  int a, b;
-  std::cin>>a>>b;
-
-  while(m--) {
-    int from, to;
-    std::cin>>from>>to;
-    graph[from].rels.push_back(to);
-  }
-
-  int res = bfs(a, b);
-  if(res == -1) {
-    std::cout<<"NIE";
-  } else {
-    std::cout<<res;
-  }
 
   std::cout.flush();
 }
