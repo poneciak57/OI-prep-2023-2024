@@ -15,23 +15,12 @@ struct Range {
   int to;
 };
 
-vec<Range> ranges;
-vec<Range> ranges_final;
+struct Segment {
+  int ind;
+  vec<int> ranges;
+};
 
-// szuka pierwszego indeksu przedziału ktory kończy się później niż dane from
-int BS(int from) {
-  int b = -1, e = ranges.size();
-  int m;
-  while(b + 1 < e) {
-    int m = (b + e) / 2;
-    if(ranges[m].to <= from) {
-      b = m;
-    } else {
-      e = m;
-    }
-  }
-  return e;
-}
+vec<Range> ranges;
 
 int main() {
   ios_base::sync_with_stdio(false);
@@ -45,7 +34,7 @@ int main() {
     int m, n;
     cin>>m>>n;
     ranges.clear();
-    ranges_final.clear();
+
     while(n--) {
       int from, to;
       cin>>from>>to;
@@ -54,20 +43,39 @@ int main() {
 
     sort(ranges.begin(), ranges.end(), [](Range &r1, Range &r2) { return r1.to < r2.to; });
 
+    int last_from = -1;
+    int last_to = -1;
+    int last_ind = -1;
+
     // usuwanie przedziałów które obejmują w całości mniejsze przedziały
-    // może być dość wolne w niektórych przypadkach
     for(int i = 0; i < ranges.size(); i++) {
-      bool is_ok = true;
-      for(int j = BS(ranges[i].from); j < i; j++) {
-        if(ranges[i].from >= ranges[j].from) {
-          is_ok = false;
-          break;
-        }
-      }
-      if(is_ok) {
-        ranges_final.push_back(ranges[i]);
+      auto &[from, to] = ranges[i];
+      if(from >= last_to) {
+        last_to = to;
+        last_from = from;
+        last_ind = i;
+      } else if(from <= last_from && last_ind != i) {
+        ranges.erase(ranges.begin() + i);
+        i--;
       }
     }
+
+    last_to = -1;
+    vec<Segment> segments;
+    // podzielenie tras na segmenty w zaleznosci od wybranych tras
+    // ilosc wybranych tras to pierwsza odpowiedz
+    for(int i = 0; i < ranges.size(); i++) {
+      auto &[from, to] = ranges[i];
+      if(from >= last_to) {
+        segments.push_back({i});
+      } else {
+        segments.back().ranges.push_back(i);
+      }
+    }
+
+
+
+
   }
 
   cout.flush();

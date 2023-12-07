@@ -8,20 +8,57 @@ typedef std::pair<ll, ll> llPair;
 template <typename T>
 using vec = std::vector<T>;
 
-const int MAX_SIZE = 1e8;
+using namespace std;
 
-vec<bool> sito(MAX_SIZE, true);
+struct Point {
+  ll x;
+  ll y;
+};
 
-void make_sito() {
-  sito[0] = false;
-  sito[1] = false;
-  for(int i = 2; i < MAX_SIZE; i++) {
-    if(sito[i]) {
-      for(int j = i + i; j < MAX_SIZE; j += i) {
-        sito[j] = false;
+struct Rock {
+  Point p;
+  vec<int> rels;
+};
+
+ll n, start, S;
+vec<Rock> rocks;
+
+inline bool can_jump(Point from, Point to) {
+  ll xs = abs(from.x - to.x);
+  ll ys = abs(from.y - to.y);
+  return (xs*xs + ys*ys) <= S*S;
+}
+
+inline double get_dist_from_start(Point p) {
+  ll ps = abs(rocks[start - 1].p.x - p.x);
+  ll ss = abs(rocks[start - 1].p.y - p.y);
+  return sqrt(ps*ps + ss*ss);
+}
+
+double bfs(int from) {
+  queue<int> q;
+  vec<bool> v(rocks.size());
+  q.push(from);
+  v[from] = true;
+
+  double max_dist = S;
+
+  while (!q.empty()) 
+  {
+    Rock &curr = rocks[q.front()];
+    q.pop();
+
+    max_dist = max(get_dist_from_start(curr.p) + S, max_dist);
+
+    for(auto rel : curr.rels) {
+      if(!v[rel]) {
+        q.push(rel);
+        v[rel] = true;
       }
     }
   }
+  return max_dist;
+
 }
 
 int main() {
@@ -29,8 +66,28 @@ int main() {
   std::cout.tie(nullptr);
   std::cin.tie(nullptr);
   
-  make_sito();
+  cin>>n>>start>>S;
 
+  rocks = vec<Rock>(n);
+
+  for(int i = 0; i < n; i++) {
+    ll x, y;
+    cin>>x>>y;
+    rocks[i] = {{x, y}};
+  }
+
+  for(int i = 0; i < n; i++) {
+    for(int j = i + 1; j < n; j++) {
+      if(can_jump(rocks[i].p, rocks[j].p)) {
+        rocks[i].rels.push_back(j);
+        rocks[j].rels.push_back(i);
+      }
+    } 
+  }
+
+  double res = bfs(start - 1);
+  cout<<fixed<<setprecision(3)<<res;
+  
   
 
   std::cout.flush();
