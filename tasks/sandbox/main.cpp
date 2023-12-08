@@ -14,7 +14,7 @@ const ll MOD1 = 1000000007;
 const ll MOD2 = 1000992299;
 
 vec<llPair> fib_hashes;
-vec<llPair> fib_sums; 
+// vec<llPair> fib_sums; 
 vec<llPair> pows;
 
 void prepare_pows() {
@@ -29,7 +29,7 @@ void prepare_pows() {
 }
 
 void prepare_fibs() {
-  fib_hashes = vec<llPair>(1000);
+  fib_hashes = vec<llPair>(100000);
   fib_hashes[0] = {1, 1};
   fib_hashes[1] = {1, 1};
   for(int i = 2; i < fib_hashes.size(); i++) { 
@@ -37,13 +37,35 @@ void prepare_fibs() {
       (fib_hashes[i - 1].first + fib_hashes[i - 2].first) % MOD1,
       (fib_hashes[i - 1].second + fib_hashes[i - 2].second) % MOD2
     };
-    for(int j = 1; j < i; j++) {
-      fib_sums.push_back({
-        (fib_hashes[j].first + fib_hashes[i].first) % MOD1,
-        (fib_hashes[j].second + fib_hashes[i].second) % MOD2
-      });
+    // for(int j = 1; j < i; j++) {
+    //   fib_sums.push_back({
+    //     (fib_hashes[j].first + fib_hashes[i].first) % MOD1,
+    //     (fib_hashes[j].second + fib_hashes[i].second) % MOD2
+    //   });
+    // }
+  }
+}
+
+bool BS(ll hash1, ll hash2) {
+  int b = -1, e = fib_hashes.size(), m;
+
+  while(b + 1 < e) {
+    m = (b + e) / 2;
+
+    if(fib_hashes[m].first >= hash1) {
+      e = m;
+    } else {
+      b = m;
     }
   }
+
+  while(e < fib_hashes.size() && fib_hashes[e].first == hash1) {
+    if(fib_hashes[e].second == hash2) {
+      return true;
+    }
+    e++;
+  }
+  return false;
 }
 
 
@@ -69,14 +91,18 @@ int main() {
   }
 
   bool found = false;
+  sort(fib_hashes.begin(), fib_hashes.end(), [](llPair &p1, llPair &p2) { return p1.first < p2. first; });
 
-  for(auto [h1, h2] : fib_hashes) {
-    if(h1 == hash1 && h2 == hash2) found = true;
+
+  for(int i = 1; i < fib_hashes.size(); i++) {
+    ll nhash1 = (hash1 - fib_hashes[i].first + MOD1) % MOD1;
+    ll nhash2 = (hash2 - fib_hashes[i].second + MOD2) % MOD2;
+    if(BS(nhash1, nhash2)) {
+      found = true;
+      break;
+    }
   }
 
-  for(auto [h1, h2] : fib_sums) {
-    if(h1 == hash1 && h2 == hash2) found = true;
-  }
 
   if(found) {
     cout<<"TAK";
