@@ -10,85 +10,79 @@ using vec = std::vector<T>;
 
 using namespace std;
 
-struct Point {
-  ll x;
-  ll y;
-};
+const ll MOD1 = 1000000007;
+const ll MOD2 = 1000992299;
 
-struct Rock {
-  Point p;
-  vec<int> rels;
-};
+vec<llPair> fib_hashes;
+vec<llPair> fib_sums; 
+vec<llPair> pows;
 
-ll n, start, S;
-vec<Rock> rocks;
-
-inline bool can_jump(Point from, Point to) {
-  ll xs = abs(from.x - to.x);
-  ll ys = abs(from.y - to.y);
-  return (xs*xs + ys*ys) <= S*S;
+void prepare_pows() {
+  pows = vec<llPair>(5007);
+  ll num1 = 1;
+  ll num2 = 1;
+  for(int i = 0; i < 5007; i++) {
+    pows[i] = {num1, num2};
+    num1 = (num1 * 10) % MOD1;
+    num2 = (num2 * 10) % MOD2;
+  }
 }
 
-inline double get_dist_from_start(Point p) {
-  ll ps = abs(rocks[start - 1].p.x - p.x);
-  ll ss = abs(rocks[start - 1].p.y - p.y);
-  return sqrt(ps*ps + ss*ss);
-}
-
-double bfs(int from) {
-  queue<int> q;
-  vec<bool> v(rocks.size());
-  q.push(from);
-  v[from] = true;
-
-  double max_dist = S;
-
-  while (!q.empty()) 
-  {
-    Rock &curr = rocks[q.front()];
-    q.pop();
-
-    max_dist = max(get_dist_from_start(curr.p) + S, max_dist);
-
-    for(auto rel : curr.rels) {
-      if(!v[rel]) {
-        q.push(rel);
-        v[rel] = true;
-      }
+void prepare_fibs() {
+  fib_hashes = vec<llPair>(1000);
+  fib_hashes[0] = {1, 1};
+  fib_hashes[1] = {1, 1};
+  for(int i = 2; i < fib_hashes.size(); i++) { 
+    fib_hashes[i] = {
+      (fib_hashes[i - 1].first + fib_hashes[i - 2].first) % MOD1,
+      (fib_hashes[i - 1].second + fib_hashes[i - 2].second) % MOD2
+    };
+    for(int j = 1; j < i; j++) {
+      fib_sums.push_back({
+        (fib_hashes[j].first + fib_hashes[i].first) % MOD1,
+        (fib_hashes[j].second + fib_hashes[i].second) % MOD2
+      });
     }
   }
-  return max_dist;
-
 }
+
+
 
 int main() {
   std::ios_base::sync_with_stdio(false);
   std::cout.tie(nullptr);
   std::cin.tie(nullptr);
   
-  cin>>n>>start>>S;
+  prepare_fibs();
+  prepare_pows();
+  
+  str s;
+  cin>>s;
 
-  rocks = vec<Rock>(n);
+  ll hash1 = 0;
+  ll hash2 = 0;
 
-  for(int i = 0; i < n; i++) {
-    ll x, y;
-    cin>>x>>y;
-    rocks[i] = {{x, y}};
+  // hashing input
+  for(int i = 0; i < s.size(); i++) {
+    hash1 = (hash1 + (s[i] - '0') * pows[s.size() - 1 - i].first) % MOD1;
+    hash2 = (hash2 + (s[i] - '0') * pows[s.size() - 1 - i].second) % MOD2;
   }
 
-  for(int i = 0; i < n; i++) {
-    for(int j = i + 1; j < n; j++) {
-      if(can_jump(rocks[i].p, rocks[j].p)) {
-        rocks[i].rels.push_back(j);
-        rocks[j].rels.push_back(i);
-      }
-    } 
+  bool found = false;
+
+  for(auto [h1, h2] : fib_hashes) {
+    if(h1 == hash1 && h2 == hash2) found = true;
   }
 
-  double res = bfs(start - 1);
-  cout<<fixed<<setprecision(3)<<res;
-  
-  
+  for(auto [h1, h2] : fib_sums) {
+    if(h1 == hash1 && h2 == hash2) found = true;
+  }
+
+  if(found) {
+    cout<<"TAK";
+  } else {
+    cout<<"NIE";
+  }
 
   std::cout.flush();
 }
