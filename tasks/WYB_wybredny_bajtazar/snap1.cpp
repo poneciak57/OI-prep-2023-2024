@@ -27,7 +27,6 @@ vec<vec<int>> tree_A;
 // drzewo operacji
 vec<Modification> tree_B;
 
-void prepare_all_mods();
 void create_trees();
 void merge_mod_nodes(int upper, int lower);
 void propagate(int cur);
