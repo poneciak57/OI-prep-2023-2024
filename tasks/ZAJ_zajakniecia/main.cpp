@@ -16,6 +16,8 @@ vec<int> t1, t2;
 
 vec<int> prev1;
 vec<int> prev2;
+unordered_map<int, vec<int>> prev1m;
+unordered_map<int, vec<int>> prev2m;
 
 void read_inp() {
   prev1 = vec<int>(n + 1, 0);
@@ -27,22 +29,22 @@ void read_inp() {
   for(int i = 1; i <= n; i++) {
     cin>>tmp;
     t1[i] = tmp;
-    for(int j = i - 1; j > 0; j--) {
-      if(t1[j] == t1[i]) {
-        prev1[i] = j;
-        break;
-      }
+    prev1m[tmp].push_back(i);
+    if(prev1m[tmp].size() == 1) {
+      prev1[i] = 0;
+    } else {
+      prev1[i] = prev1m[tmp][prev1m[tmp].size() - 2];
     }
   }
 
   for(int i = 1; i <= m; i++) {
     cin>>tmp;
     t2[i] = tmp;
-    for(int j = i - 1; j > 0; j--) {
-      if(t2[j] == t2[i]) {
-        prev2[i] = j;
-        break;
-      }
+    prev2m[tmp].push_back(i);
+    if(prev2m[tmp].size() == 1) {
+      prev2[i] = 0;
+    } else {
+      prev2[i] = prev2m[tmp][prev2m[tmp].size() - 2];
     }
   }
 }
@@ -60,7 +62,7 @@ int countLCS() {
       } else {
         LCS[imod][j] = 0;
       }
-      LCS[i][j] = max({LCS[(imod + 1)% 2][j], LCS[imod][j - 1], LCS[imod][j]});
+      LCS[imod][j] = max({LCS[(imod + 1)% 2][j], LCS[imod][j - 1], LCS[imod][j]});
     }
 
     for(int j = 1; j <= m; j++) {
