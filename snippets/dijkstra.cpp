@@ -19,6 +19,14 @@ struct Node {
 ll n;
 vec<Node> graf;
 
+// custom comparator
+struct Greater {
+  bool operator()(std::pair<int,int> &p1, std::pair<int,int> &p2) {
+    // remember here !!! GREATER FOR PQ
+    return p1.first > p2.first;
+  }
+};
+
 ll dijkstra(ll src, ll dest) {
   vec<ll> d(n + 1, LLONG_MAX);
   d[src] = 0;
