@@ -10,12 +10,15 @@ using vec = std::vector<T>;
 
 using namespace std;
 
+inline int rand_range(int from, int to) {
+  return (rand() % (to - from + 1)) + from;
+}
 
 int main() {
   ios_base::sync_with_stdio(false);
   cout.tie(nullptr);
   cin.tie(nullptr);
-
+  srand(time(nullptr));
 
   cout.flush();
 }
