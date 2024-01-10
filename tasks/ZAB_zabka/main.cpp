@@ -51,92 +51,88 @@ int main() {
   cout.flush();
 }
 
-// vec<int> ans(n + 1); // answers
-// // {id_cyklu, pozycja w cyklu}
-// vec<pair<int,int>> cykl(n + 1, {-1, -1});
-// vec<vec<int>> cykle;
-// vec<int> c(n + 1, -1); // count from the start of dfs
-// vec<bool> v(n + 1, false); // is visited
+vec<int> ans;
+vec<vec<int>> cycles;
+vec<int> state; // 0 - unvisited, 1 - in current chain, 2 - visited
 
-// int WCyklu(int w, ll p) {
-//   auto [cid, pos] = cykl[w];
-//   return cykle[cid][(p + pos) % cykle[cid].size()];
-// }
+struct QEntry {
+  int v;
+  int cycle_id;
+  int cycle_pos;
+};
+queue<QEntry> q;
 
-// vec<int> tt;
-// vec<vec<int>> ngraph;
-// void DFS(int v) {
-//     tt.push_back(v);
-//     if(tt.size() >= m) ans[v] = tt[tt.size() - m];
-//     else ans[v] = WCyklu(tt[0], m - tt.size() + 1);
-//     for(auto e : ngraph[v]) DFS(e);
-//     tt.pop_back();
-    
-//   }
+vec<vec<int>> graph;
 
-// void solve2() {
-//   ans = vec<int>(n + 1);
-//   // {id_cyklu, pozycja w cyklu}
-//   cykl = vec<pair<int,int>>(n + 1, {-1, -1});
-//   c = vec<int>(n + 1, -1);
-//   v = vec<bool>(n + 1, false); 
-//   // znajdowanie cykli w grafie
-//   for(int i = 1; i <= n; i++) {
-//     if(v[i]) continue;
-//     int j = i;
-//     int q = 0;
-//     vec<int> t;
-//     while(c[j] == -1 && f[j] != -1) {
-//       t.push_back(j);
-//       c[j] = q;
-//       j = f[j];
-//       v[j] = true;
-//       q++;
-//     }
-//     // wierzcholek juz nalezy do cyklu ktory byl juz dodany
-//     if(f[j] == -1) {
-//       continue;
-//     }
+int find_cycle(int v) {
+  if(state[v] == 2) return -1;
+  if(state[v] == 1) return v;
 
-//     vec<int> cur_cykl;
-//     // przechodzimy jeszcze raz po calym cyklu zapisujemy wyniki c mod m
-//     // od q odejmujemy dystans ktory nie nalezy do cyklu i otrzymujemy dlugosc cyklu
-//     int count = q - c[j];
-//     int cur = j;
-//     int odp = (m % count) + c[j];
-//     int pos = 0;
-//     do {
-//       cykl[cur] = {cykle.size(), cur_cykl.size()};\
-//       cur_cykl.push_back(cur);
-//       // ans[cur] = t[odp];
-//       odp = f[odp];
-//       cur = f[cur];
-//     } while(cur != j);
-//     cykle.push_back(cur_cykl);
+  state[v] = 1;
+  int ret = find_cycle(f[v]);
+  state[v] = 2;
+  return ret;
+}
 
-//     // usuwamy takze wierzcholki w cyklu (ich relacje)
-//     do {
-//       int next = f[cur];
-//       f[cur] = -1;
-//       cur = next;
-//     } while(cur != j);
-//   }
+int cycle_pos;
+int cycle_id;
 
-//   ngraph = vec<vec<int>>(n + 1);
-//   for(int i = 1; i <= n; i++) {
-//     if(f[i] == -1) continue;
-//     ngraph[f[i]].push_back(i);
-//   }
+int getNth(int n) {
+  return cycles[cycle_id][(cycle_pos + n) % cycles[cycle_id].size()];
+}
 
-//   for(int i = 1; i <= n; i++) {
-//     if(cykl[i].first != -1) {
-//       DFS(i);
-//     }
-//   }
-//   for(int i = 1; i <= n; i++) {
-//     cout<<ans[i]<<" ";
-//   }
-// }
+vec<int> t;
+void dfs(int v) {
+  if(t.size() < m) ans[v] = getNth(m - t.size());
+  else ans[v] = t[t.size() - m];
+
+  t.push_back(v);
+  for(auto e : graph[v]) {
+    dfs(e);
+  }
+  t.pop_back();
+}
+
+void solve2() {
+  // szukamy wszystkich cykli
+  // zapisujemy te cykle w tablicy dwuwymiarowej
+  state = vec<int>(n + 1, 0);
+
+  for(int i = 1; i <= n; i++) {
+    int v = find_cycle(i);
+    if(v == -1) continue;
+
+    // znajdujemy wszystkie wierzcholki danego cyklu
+    vec<int> cycle;
+    while(f[v] != -1) {
+      int w = f[v];
+      f[v] = -1;
+      q.push({v, (int)cycles.size(), (int)cycle.size()});
+      cycle.push_back(v);
+      v = w;
+    }
+    cycles.push_back(cycle);
+  }
+
+  // odwracamy graf
+  graph = vec<vec<int>>(n + 1);
+  for(int i = 1; i <= n; i++) {
+    if(f[i] == -1) continue;
+    graph[f[i]].push_back(i);
+  }
+
+  ans = vec<int>(n + 1);
+  while(!q.empty()) {
+    auto [v, cid, cp] = q.front();
+    cycle_id = cid;
+    cycle_pos = cp;
+    dfs(v);
+    q.pop();
+  }
+  for(int i = 1; i <= n; i++) {
+    cout<<ans[i]<<" ";
+  }
+}
 
 void solve1() {
   // we apply h on g

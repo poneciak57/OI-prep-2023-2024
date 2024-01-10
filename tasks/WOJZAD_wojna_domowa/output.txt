@@ -1,0 +1,8 @@
+starting sss at 1
+starting sss at 2
+starting sss at 5
+3
+TAK
+NIE
+TAK
+TAK

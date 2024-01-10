@@ -21,11 +21,50 @@ inline int rand_range(int from, int to) {
   return (rand() % (to - from + 1)) + from;
 }
 
+vec<vec<int>> graph;
+// 0 - unvisited, 1 - in current chain, 2 - visited
+vec<int> state;
+
+bool has_cycle(int v) {
+  if(state[v] == 1) return true;
+  if(state[v] == 2) return false;
+  state[v] = 1;
+  bool ret = false;
+  for(auto w : graph[v]) {
+    ret = ret || has_cycle(w);
+  } 
+  state[v] = 2;
+  return ret;
+}
+
 int main() {
   ios_base::sync_with_stdio(false);
   cout.tie(nullptr);
   cin.tie(nullptr);
   srand(time(nullptr));
+
+  int p, s;
+  cin>>p>>s;
+
+  graph = vec<vec<int>>(p + 1);
+  state = vec<int>(p + 1, 0);
+
+  while(s--) {
+    int a, b;
+    cin>>a>>b;
+    graph[a].push_back(b);
+    // graph[b].push_back(a);
+  }
+
+  bool found = false;
+  for(int i = 1; i <= p; i++) {
+    found = found || has_cycle(i);
+  }
+  if(found) {
+    cout<<"TAK";
+  } else {
+    cout<<"NIE";
+  }
 
   
 
