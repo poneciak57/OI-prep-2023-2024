@@ -50,6 +50,9 @@ vec<CNode> c_trans_graph;
  * i wykonac w takiej kolejnosci dynamika
  * 
  * ew zaczac od gmachu i na transponowanym grafie SSC isc od niego i dodawac ilosc mozliwosci
+ * 
+ * !!!
+ * Jesli gmach lezy w SCC ktory jest > 1 elementowy to kazda nawet jednoelementowa skladowa moze osiagnac wartosc "zawsze" krazac dookola gmachu
 */
 
 int main() {
