@@ -35,7 +35,7 @@ struct Node {
   int ot {1};
 };  
 
-const int LOG = 19;
+const int LOG = 20;
 int n, k;
 
 // tylko dla drzew, LCA cykli bedzie wypelnione ich id
@@ -239,10 +239,10 @@ void prepare_cycles() {
       graph[v].ot = 2;
       graph[v].cid = cycles.size();
       graph[v].cpos = cycle.size();
-      cycle.push_back(v);
+      cycle.emplace_back(v);
       v = graph[v].next;
     }
-    cycles.push_back(cycle);
+    cycles.emplace_back(cycle);
   }
 }
 
@@ -255,7 +255,7 @@ void init() {
   for(int i = 1, next; i <= n; i++) {
     cin>>next;
     graph[i].next = next;
-    rev_graph[next].push_back(i);
+    rev_graph[next].emplace_back(i);
   }
 }
 
