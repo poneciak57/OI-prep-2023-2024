@@ -10,18 +10,13 @@ using vec = std::vector<T>;
 
 using namespace std;
 
-const ll MOD1 = 1e9 + 7;
-const ll MOD2 = 1000992299;
-
-ll powm(ll a, ll n, ll MOD);
-ll multm(ll a, ll b, ll MOD);
-ll divm(ll a, ll b, ll MOD);
-
 inline int rand_range(int from, int to) {
   return (rand() % (to - from + 1)) + from;
 }
 
-const int N = 1 << 20;
+int n;
+vec<int> klocki;
+const int N = 1 << 10;
 // {max, i}
 vec<pair<int,int>> tree(2 * N, {0, 0});
 
@@ -32,10 +27,10 @@ pair<int, int> get_max_on_range(int cur, int left, int right, int lOb, int rOb) 
   }
   int mid = (lOb + rOb) / 2;
   if(right <= mid) return get_max_on_range(cur * 2, left, right, lOb, mid);
-  if(left > mid) return get_max_on_range(cur * 2 + 1, left, right, mid + 1, rOb);
+  if(left > mid) return get_max_on_range(cur * 2 + 1, left, right, mid + 1, right);
 
   pair<int, int> lside = get_max_on_range(cur * 2, left, mid, lOb, mid);
-  pair<int, int> rside = get_max_on_range(cur * 2 + 1, mid + 1, right, mid + 1, rOb);
+  pair<int, int> rside = get_max_on_range(cur * 2 + 1, mid + 1, right, mid + 1, right);
   if(lside.first > rside.first) return lside;
   return rside;
 }
@@ -51,10 +46,8 @@ void update(int i, int v, int ind) {
   }
 }
 
-void seg_tree() {
-  int n;
-  cin>>n;
-  vec<int> klocki(n + 1);
+vec<int> seg_tree() {
+  tree = vec<pair<int,int>>(2 * N, {0, 0});
   klocki[0] = 0;
   // {value, ind}
   vec<pair<int, int>> a(n);
@@ -62,7 +55,6 @@ void seg_tree() {
   vec<int> p(n + 1, 0);
 
   for(int i = 1; i <= n; i++) {
-    cin>>klocki[i];
     a[i - 1] = {klocki[i], i};
   }
   sort(a.begin(), a.end(), [](pair<int, int> p1, pair<int,int> p2) { 
@@ -74,10 +66,10 @@ void seg_tree() {
 
   for(auto [v, ind] : a) {
     if(ind - v < 0) continue;
-    pair<int, int> mr = get_max_on_range(1, 1, v - 1, 1, N);
-    t[ind] = mr.first + 1;
-    p[ind] = mr.second;
-    update(N + v - 1, t[ind], ind);
+    auto [ct, cp] = get_max_on_range(1, 1, v - 1, 1, N);
+    t[ind] = ct + 1;
+    p[ind] = cp;
+    update(N + v, t[ind], ind);
   }
 
   int k = tree[1].second;
@@ -90,21 +82,50 @@ void seg_tree() {
     }
     k = j;
   }
-
-  cout<<ans.size()<<"\n";
-  for(auto a : ans) {
-    cout<<a<<" ";
-  }
+  return ans;
 }
 void dynamik();
+
+bool test() {
+  vec<int> ans = seg_tree();
+  vec<bool> deleted(n + 1, false);
+
+  for(auto a : ans) {
+    if(a > n || deleted[a]) {
+      return false;
+    }
+    deleted[a] = true;
+  }
+
+  return true;
+}
 
 int main() {
   ios_base::sync_with_stdio(false);
   cout.tie(nullptr);
   cin.tie(nullptr);
-  srand(time(nullptr));
+  // srand(time(nullptr));
 
-  seg_tree();
+  for(int i = 1; i <= 1000; i++) {
+    srand(i);
+    n = rand_range(10, 20);
+    klocki = vec<int>(n + 1);
+    for(int i = 1; i <= n; i++) {
+      klocki[i] = rand_range(1, n);
+    }
+    if(test() == false) {
+      cout<<"BLAD\n";
+      cout<<n<<"\n";
+      for(auto k : klocki) {
+        cout<<k<<" ";
+      }
+      cout<<"\n";
+    } else {
+      cout<<"TEST #"<<i<<": OK\n";
+    }
+  }
+
+  // seg_tree();
   // dynamik();
 
   cout.flush();
@@ -158,26 +179,4 @@ void dynamik() {
   for(auto a : ans) {
     cout<<a<<" ";
   }
-}
-
-
-
-ll powm(ll a, ll n, ll MOD) {
-  ll w = 1;
-
-  while (n > 0) {
-    if (n % 2 == 1)
-      w = (w * a) % MOD;
-      a = (a * a) % MOD;
-      n /= 2;
-  }
-  return w;
-}
-
-ll multm(ll a, ll b, ll MOD) {
-  return (a * b) % MOD;
-}
-
-ll divm(ll a, ll b, ll MOD) {
-  return multm(a, powm(b, MOD - 2, MOD), MOD);
 }
