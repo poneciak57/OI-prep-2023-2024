@@ -1,18 +1,20 @@
 #include <bits/stdc++.h>
-#define LL_INF 1000000000000000007
-
-typedef long long ll;
-typedef std::string str;
-typedef std::pair<ll, ll> llPair;
-
-template <typename T>
-using vec = std::vector<T>;
+#define LLINF 100000000000000007
 
 using namespace std;
+typedef long long ll;
+typedef string str;
+template <typename T> using vec = vector<T>;
+
+
 
 int main() {
-  ios_base::sync_with_stdio(false);
-  cout.tie(nullptr);
-  cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
 
+	
+
+	cout.flush();
+	return 0;
 }

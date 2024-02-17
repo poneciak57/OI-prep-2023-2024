@@ -42,6 +42,7 @@ int get_lca_brut(int a, int b) {
   return a;
 }
 
+// O(log_n)
 int get_lca_optimal(int a, int b) {
   if(depth[a] < depth[b]) swap(a, b);
 
