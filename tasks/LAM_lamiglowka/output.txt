@@ -1,0 +1,11 @@
+10
+K 1 A
+K 5 A
+R 5 Z
+K 4 P
+R 2 Z
+K 2 P
+R 1 Z
+R 3 Z
+R 4 Z
+K 3 P
