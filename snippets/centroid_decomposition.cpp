@@ -22,6 +22,7 @@ struct Node {
 vec<Node> tree;
 
 int subt_size(int v, int par) {
+  tree[v].subt_size = 1;
   for(auto e : tree[v].rels) {
     if(e == par || tree[e].was_centroid) continue;
     tree[v].subt_size += subt_size(e, v);
