@@ -4,109 +4,50 @@
 using namespace std;
 typedef long long ll;
 typedef string str;
+typedef pair<ll,ll> llp;
 template <typename T> using vec = vector<T>;
 
-const ll MOD1 = 1e9 + 7;
-const ll MOD2 = 1000992299;
-
-ll powm(ll a, ll n, ll MOD);
-ll multm(ll a, ll b, ll MOD);
-ll divm(ll a, ll b, ll MOD);
-
-// liczymy dla 5
-
-int M = 5;
-int n = 5;
-int BASE = 1 * 2 * 3 * 4 * 5;
-
-ll mult_ft(ll from, ll to) {
-	ll wyn = 1;
-	for(ll i = from; i <= to; i++) wyn *= i;
-	return wyn;
-}
-
-ll combs_heura(int on_right) {
-	ll frow = mult_ft(1, n - on_right - 1) * mult_ft(1, on_right);
-	M = (n - on_right - 1);
-	BASE = mult_ft(1, M);
-	return frow * mult_ft(on_right + 2, n) / BASE;
-}
-
-ll count(int diff) {
-	ll wyn = BASE;
-
-	ll mult_top = 1;
-	ll mult_bot = 1;
-	for(int i = 1; i <= M; i++) {
-		mult_bot *= i;
-		mult_top *= i + diff;
-		ll cur_w = mult_top * BASE / mult_bot;
-		wyn += cur_w;
-	}
-	return wyn;
-}
-
-ll heura(int diff) {
-	return mult_ft(diff + 2, diff + M + 1);
-}
 
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 	cout.tie(nullptr);
 
-	// for(int i = 0; i < 500; i++) {
-	// 	if(divm(i, 120, MOD1) == 233333338) {
-	// 		cout<<i<<"\n";
-	// 	}
-	// }
-	cout<<divm(364, 120, MOD1)<<"\n";
+	// #define NWD std::gcd;
+	const int LIM = 1e3;
+	int liczby[LIM];
 
-	cout<<combs_heura(4)<<"\n";
-	cout<<combs_heura(3)<<"\n";
-	cout<<combs_heura(2)<<"\n";
-	cout<<combs_heura(1)<<"\n";
-	cout<<combs_heura(0)<<"\n";
+	int max_c = 0; // dlugosc maksymalnego podciagu gdzie NWD > 1
+	int max_c_ind = -1; // indeks poczatku tego ciagu
+	int max_c_nwd = -1; // nwd tego ciagu
 
-	// for(int i = 1; i < 100; i++) {
-	// 	if(count(i) != heura(i)) {
-	// 		cout<<"ERROR";
-	// 		return 0;
-	// 	}
-	// 	// cout<<i<<" -> c: "<<count(i)<<" h: "<<heura(i)<<"\n";
-	// }
+	for(int i = 0; i < LIM; i++) {
+		// ustalamy poczatkowe nwd ciagu
+		int nwd = liczby[i];
+		int jmem = 0; // maksymalny j dla ktorego nwd bylo > 1
+		for(int j = i; j < LIM; j++) {
+			nwd = gcd(nwd, liczby[i]); // obliczamy nwd spojnego pocviagu [i, j]
+			if(nwd == 1) break; // jesli nwd spadnie do 1 konczymy petle poniewaz to nwd juz do konca bedzie rowne 1
+			jmem = j; // aktualizujemy najwieksze j dla ktorego nwd > 1
+		}
+		
+		// sprawdzamy czy najdluzszy podciag zaczynajacy sie w i spelniajacy warunek NWD > 1 
+		// jest dluzszy od obecnie najdluzszego
+		if(jmem - i > max_c) {
+			max_c = jmem - i;
+			max_c_ind = i;
+			max_c_nwd = nwd;
+		}
+	}
 
-	// cout<<"wszystkie testy zaliczone :)";
+	// wypisujemy dane
+	cout<<"count: "<<max_c<<"\n";
+	cout<<"nwd: "<<max_c_nwd<<"\n";
+	cout<<"ind: "<<max_c_ind<<"\n";
+	cout<<"nums: ";
+	for(int i = max_c_ind; i < max_c_ind + max_c; i++) cout<<liczby[i]<<" ";
+	
+	
 	cout.flush();
 	return 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-ll powm(ll a, ll n, ll MOD) {
-  ll w = 1;
-
-  while (n > 0) {
-    if (n % 2 == 1)
-      w = (w * a) % MOD;
-      a = (a * a) % MOD;
-      n /= 2;
-  }
-  return w;
-}
-
-ll multm(ll a, ll b, ll MOD) {
-  return (a * b) % MOD;
-}
-
-ll divm(ll a, ll b, ll MOD) {
-  return multm(a, powm(b, MOD - 2, MOD), MOD);
 }
