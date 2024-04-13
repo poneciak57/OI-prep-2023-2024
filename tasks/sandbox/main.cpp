@@ -4,9 +4,8 @@
 using namespace std;
 typedef long long ll;
 typedef string str;
+typedef pair<ll,ll> llp;
 template <typename T> using vec = vector<T>;
-
-
 
 int main() {
 	ios_base::sync_with_stdio(false);
@@ -14,7 +13,7 @@ int main() {
 	std::cout.tie(nullptr);
 
 
-
 	std::cout.flush();
+
 	return 0;
 }
